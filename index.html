@@ -1,0 +1,227 @@
+<<!DOCTYPE html>
+<html lang="en">
+<head> 
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kejadian Gempa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    body {
+      background-color: #f4f7f5;
+      color: #333;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #ffe79f;
+      padding: 15px 30px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      height: 100px;
+    }
+    .brand-title {
+     font-size: 28px;
+      color: #346b8a;
+      font-weight: 700;
+      margin-left: 20px;
+    }
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #356a89;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #f9c74f;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .hero img {
+      width: 90%;
+      max-width: 900px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+      color: #2e5e4e;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: #555;
+    }
+
+    .team-section {
+      text-align: center;
+      margin: 50px auto;
+      max-width: 1100px;
+      padding: 20px;
+    }
+
+    .team-section h2 {
+      font-size: 28px;
+      color: #2e5e4e;
+      margin-bottom: 30px;
+    }
+
+    .team-members {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .member-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 200px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .member-card img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .member-card h3 {
+      font-size: 18px;
+      color: #333;
+    }
+
+    .info-section {
+      text-align: center;
+      max-width: 800px;
+      margin: 40px auto;
+      font-size: 16px;
+      color: #444;
+      padding: 0 20px;
+    }
+
+    @media (max-width: 600px) {
+      nav ul {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .team-members {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="LOGO_DASAR.png" alt="Forecastquake" class="logo" />
+    <h1 class="brand-title">FORECASTQUAKE</h1>
+    <nav>
+      <ul>
+        <li>
+          <a href="index.html"><i data-feather="home"></i> Beranda</a>
+        </li>
+        <li>
+          <a href="peta.html"><i data-feather="activity"></i> Gempa</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <img src="fronted.jpg" alt="fronted">
+    <h1>Selamat Datang di Website Kami</h1>
+    <p>Website ini menyediakan informasi mengenai kejadian gempa bumi selama satu minggu terakhir secara interaktif dan visual.</p>
+  </section>
+
+  <section class="team-section">
+    <h2>Tim Pengembang Website</h2>
+    <div class="team-members">
+
+      <a href="https://www.instagram.com/shofuralee/" target="_blank" style="text-decoration: none; color: inherit;">
+        <div class="member-card">
+          <img src="shofura.jpg" alt="shofura">
+          <h3>Shofura A.N</h3>
+        </div>
+      </a>
+
+      <a href="https://www.instagram.com/rosanti.es/" target="_blank" style="text-decoration: none; color: inherit;">
+        <div class="member-card">
+          <img src="rosanti.jpg" alt="rosanti">
+          <h3>Rosanti S</h3>
+        </div>
+      </a>
+
+      <a href="https://www.instagram.com/said_zakaria19/" target="_blank" style="text-decoration: none; color: inherit;">
+        <div class="member-card">
+          <img src="said.jpg" alt="said">
+          <h3>Said M. Zakaria</h3>
+        </div>
+      </a>
+
+      <a href="https://www.instagram.com/rozi_hfi/" target="_blank" style="text-decoration: none; color: inherit;">
+        <div class="member-card">
+          <img src="yozar.jpg" alt="yozar">
+          <h3>M. Yozar A</h3>
+        </div>
+      </a>
+    </div>
+
+  </section>
+  <section class="team-section">
+    <h2>Dosen Pengampu Mata Kuliah</h2>
+    <div class="team-members">
+      <a href="https://farda.staff.ugm.ac.id/" target="_blank" style="text-decoration: none; color: inherit;">
+        <div class="member-card">
+          <img src="farda.jpg" alt="farda">
+          <h3>Nur Muhammad Farda</h3>
+        </div>
+      </a>
+    </div>
+  </section>
+
+
+  <section class="info-section">
+    <p>
+      Forecastquake adalah proyek berbasis web yang dirancang untuk memantau dan menyajikan data gempa bumi terkini dari seluruh dunia. 
+      Kami menggunakan data real-time dari USGS untuk memberikan informasi lokasi, waktu, dan kekuatan gempa dalam antarmuka peta interaktif.
+      Tujuan kami adalah meningkatkan kesadaran dan membantu masyarakat untuk lebih siap terhadap bencana alam, khususnya gempa bumi.
+    </p>
+  </section>
+
+  <script>
+    feather.replace();
+  </script>
+</body>
+</html>

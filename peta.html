@@ -1,0 +1,332 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kejadian Gempa</title>
+  <link
+  href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
+  rel="stylesheet"
+  />
+  <script src="https://unpkg.com/feather-icons"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <style>
+        /* Reset dan Font */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    body {
+      background-color: #f4f7f5;
+      color: #000000;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #ffe79f; /* hijau gelap */
+      padding: 15px 30px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      height: 100px;
+    }
+    .brand-title {
+     font-size: 28px;
+      color: #346b8a;
+      font-weight: 700;
+      margin-left: 20px;
+    }
+    /* Navigation */
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #356a89;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #f9c74f; /* kuning/oranye lembut */
+    }
+
+    #map {
+        height: 600px;
+        width: 90%;
+        margin: 20px auto;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    }
+    /* Search Box */
+    #search-container {
+      text-align: center;
+      margin: 20px;
+    }
+    #search-box {
+      padding: 12px;
+        width: 320px;
+        font-size: 14px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        min-width: 250px;
+    }
+
+    #search-container button {
+      background-color: #f8961e; /* oranye alami */
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    #search-container button:hover {
+      background-color: #f3722c;
+    }
+
+    /* Map */
+    #map {
+      height: 100vh;
+      z-index: 1;
+    }
+    .leaflet-control-layers {
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .leaflet-control-layers label {
+      display: flex;
+      align-items: center;
+      margin: 6px 0;
+    }
+
+    /* Popup styling */
+    .popup-content {
+      font-size: 14px;
+      animation: fadeInPopup 0.5s ease-in-out;
+    }
+
+    @keyframes fadeInPopup {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .popup-content strong {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      #search-container {
+        flex-direction: column;
+        align-items: stretch;
+        width: 90%;
+        left: 5%;
+        transform: none;
+      }
+
+      nav ul {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+    <header>
+      <img src="LOGO_DASAR.png" alt="Forecastquake" class="logo" />
+      <h1 class="brand-title">FORECASTQUAKE</h1>
+      <nav>
+          <ul>
+            <li>
+              <a href="index.html">
+                <i data-feather="home"></i> Beranda
+              </a>
+            </li>
+            <li>
+              <a href="peta.html">
+                <i data-feather="activity"></i> Gempa
+              </a>
+            </li>
+          </ul>
+        </nav>
+    </header>
+    <div id="search-container">
+      <input type="text" id="search-box" placeholder="Cari lokasi..." />
+      <button onclick="searchLocation()">Cari</button>
+    <div id="map"></div>
+    <script>
+      var map = L.map("map").setView([-2.5489, 118.0149], 5);
+        var arcgis = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{
+            attribution:'&copy; <a href="https://www.esri.com/">Esri</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+            maxZoom: 18,
+        })
+    
+        var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© OpenStreetMap'
+        });
+        
+        var terrainLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: 'Map data: © OpenTopoMap contributors="http://openstreetmap.org">OpenStreetMap</a> contributors'
+        });
+
+        arcgis.addTo(map);
+
+        // Kontrol layer untuk pemilihan peta dasar dan overlay
+        var baseMaps = {
+            "🛰️Satelit": arcgis,
+            "🗺️ osmLayer": osmLayer,
+            "⛰️terrainLayer": terrainLayer
+        };
+
+        // Tambahkan kontrol layer ke peta
+        L.control.layers(baseMaps).addTo(map);
+
+    const locations = [
+      { name: "Aceh", coords: [5.55, 95.32] },
+      { name: "Jakarta", coords: [-6.2, 106.8] },
+      { name: "Yogyakarta", coords: [-7.8, 110.4] },
+      { name: "Makassar", coords: [-5.14, 119.4] },
+      { name: "Papua", coords: [-4.0, 138.0] }
+    ];
+
+    let earthquakes = [];
+
+    fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson')
+      .then(res => res.json())
+      .then(data => {
+        earthquakes = data.features;
+
+        locations.forEach(loc => {
+          const nearby = getNearbyEarthquakes(loc.coords);
+          const summary = summarizeEarthquakes(nearby);
+
+          const popupHtml = generatePopupHtml(loc.name, summary);
+          L.marker(loc.coords).addTo(map).bindPopup(popupHtml);
+        });
+      })
+      .catch(err => {
+        console.error("Gagal ambil data USGS", err);
+        alert("Gagal memuat data gempa dari USGS.");
+      });
+
+      map.on('click', function(e) {
+      const coords = [e.latlng.lat, e.latlng.lng];
+      const nearby = getNearbyEarthquakes(coords);
+      const summary = summarizeEarthquakes(nearby);
+
+      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${coords[0]}&lon=${coords[1]}&format=json`)
+        .then(res => res.json())
+        .then(data => {
+          const locationName = data.display_name || `Lokasi Klik (${coords[0].toFixed(2)}, ${coords[1].toFixed(2)})`;
+          const popupHtml = generatePopupHtml(locationName, summary);
+          L.popup()
+            .setLatLng(e.latlng)
+            .setContent(popupHtml)
+            .openOn(map);
+        });
+    });
+
+    function getNearbyEarthquakes(coords) {
+      return earthquakes.filter(eq => {
+        const [lng, lat] = eq.geometry.coordinates;
+        const dist = getDistance(lat, lng, coords[0], coords[1]);
+        return dist <= 500;
+      });
+    }
+
+    function summarizeEarthquakes(list) {
+      let ringan = 0, sedang = 0, berat = 0;
+      const details = [];
+      list.forEach(eq => {
+        const mag = eq.properties.mag;
+        const time = new Date(eq.properties.time).toLocaleString();
+        if (mag < 4.5) ringan++;
+        else if (mag < 6.0) sedang++;
+        else berat++;
+        details.push(`Mag: ${mag} | ${time}`);
+      });
+      return { total: list.length, ringan, sedang, berat, details };
+    }
+
+    function generatePopupHtml(title, summary) {
+      return `
+        <div class="popup-content">
+          <strong>📍  ${title}</strong><br>
+          Total Gempa: ${summary.total}<br>
+          Ringan: ${summary.ringan}, Sedang: ${summary.sedang}, Tinggi: ${summary.berat}<br><br>
+          <strong>📅  Detail Kejadian:</strong><br>
+          <ul>
+            ${summary.details.slice(0, 5).map(d => `<li>${d}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+    }
+
+    function getDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    function toRad(val) {
+      return val * Math.PI / 180;
+    }
+    function searchLocation() {
+      const query = document.getElementById('search-box').value;
+      if (!query) return;
+      fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=1`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.length > 0) {
+            const lat = parseFloat(data[0].lat);
+            const lon = parseFloat(data[0].lon);
+            const name = data[0].display_name;
+            map.setView([lat, lon], 8);
+            const nearby = getNearbyEarthquakes([lat, lon]);
+            const summary = summarizeEarthquakes(nearby);
+            const popupHtml = generatePopupHtml(name, summary);
+            L.popup()
+              .setLatLng([lat, lon])
+              .setContent(popupHtml)
+              .openOn(map);
+          } else {
+            alert("Lokasi tidak ditemukan.");
+          }
+        });
+    }
+
+    feather.replace();
+
+  </script>
+</body>
+</html>
+
